@@ -18,9 +18,10 @@
       },
       "package": "com.bmsce.lostandfound",
       "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "ios": {
@@ -36,6 +37,11 @@
           "cameraPermission": "Allow BMSCE Lost & Found to use your camera to photograph found items."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "92559d72-1a21-43c0-966e-da3d4d938793"
+      }
+    }
   }
 }
