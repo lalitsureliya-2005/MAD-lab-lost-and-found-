@@ -11,7 +11,7 @@
 //   → Paste it below, e.g. 'https://abc123.ngrok-free.app/api'
 //
 // ============================================================
-
-const API_URL = 'http://192.168.1.4:5000/api'; // ← local WiFi network
+const API_URL = 'https://mad-lab-lost-and-found.onrender.com/api';
+ // ← local WiFi network
 
 export default API_URL;
