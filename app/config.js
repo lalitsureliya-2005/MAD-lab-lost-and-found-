@@ -12,6 +12,6 @@
 //
 // ============================================================
 
-const API_URL = 'http://192.168.1.6:5000/api'; // ← local WiFi network
+const API_URL = 'http://192.168.1.4:5000/api'; // ← local WiFi network
 
 export default API_URL;
