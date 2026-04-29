@@ -11,15 +11,36 @@ import LoginScreen from './screens/LoginScreen';
 
 const Stack = createStackNavigator();
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+import * as Device from 'expo-device';
+
+// ... (keep existing setNotificationHandler) ...
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync({
+      projectId: 'b0e0d5a0-0b0a-4b0a-8b0a-0b0a0b0a0b0a', // Placeholder, will use default if empty
+    })).data;
+  }
+  return token;
+}
 
 export default function App() {
+  const [expoPushToken, setExpoPushToken] = React.useState('');
+
+  React.useEffect(() => {
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+  }, []);
+
   return (
     <ThemeProvider>
       <NavigationContainer>
@@ -37,18 +58,11 @@ export default function App() {
           <Stack.Screen 
             name="Dashboard" 
             component={DashboardScreen}
-            options={{ cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter }}
           />
-          <Stack.Screen 
-            name="ReportForm" 
-            component={ReportFormScreen}
-            options={{ cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
-          />
-          <Stack.Screen 
-            name="History" 
-            component={HistoryScreen}
-            options={{ cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
-          />
+          <Stack.Screen name="ReportForm">
+            {(props) => <ReportFormScreen {...props} expoPushToken={expoPushToken} />}
+          </Stack.Screen>
+          <Stack.Screen name="History" component={HistoryScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>

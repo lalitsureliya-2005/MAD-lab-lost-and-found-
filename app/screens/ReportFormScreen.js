@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import API_URL from '../config';
 import { useTheme } from '../ThemeContext';
 
-export default function ReportFormScreen({ navigation }) {
+export default function ReportFormScreen({ navigation, expoPushToken }) {
   const { theme } = useTheme();
   const [type, setType] = useState('lost');
   const [title, setTitle] = useState('');
@@ -17,8 +17,8 @@ export default function ReportFormScreen({ navigation }) {
   const [reporterPhone, setReporterPhone] = useState('');
   const [imageUri, setImageUri] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  // Expo Push Notifications are disabled while testing within Expo Go due to SDK 53+ limitations.
-  const [expoToken, setExpoToken] = useState(null);
+  // Using expoPushToken passed from App.js
+  const expoToken = expoPushToken;
 
   const categories = ['Electronics', 'Books', 'Keys', 'Wallets', 'Others'];
   const locations = ['Main Block', 'Library', 'Canteen', 'Lab', 'Outdoors'];
