@@ -78,8 +78,11 @@ router.post('/', upload.single('image'), async (req, res) => {
       }
 
       // GLOBAL BROADCAST: Notify everyone about the new report
+      console.log('[DEBUG] Incoming report push token:', expoPushToken);
+      
       // Find all unique push tokens in the database
       const allTokens = await Item.distinct('expoPushToken', { expoPushToken: { $ne: null } });
+      console.log(`[DEBUG] Found ${allTokens.length} existing tokens in database.`);
       
       // Also include the current token if provided
       if (expoPushToken && !allTokens.includes(expoPushToken)) {
@@ -106,6 +109,8 @@ router.post('/', upload.single('image'), async (req, res) => {
         } catch (err) {
           console.error('[Push Broadcast Failure]', err);
         }
+      } else {
+        console.log('[Push] No devices found to notify.');
       }
 
       // Send SMS Notifications (if Twilio is configured)
