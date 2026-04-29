@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "BMSCE Lost & Found",
+    "slug": "bmsce-lost-found",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./working_logo.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./working_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#010C1A"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./working_logo.png",
+        "backgroundColor": "#010C1A"
+      },
+      "package": "com.bmsce.lostandfound",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.bmsce.lostandfound"
+    },
+    "plugins": [
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow BMSCE Lost & Found to access your photos to attach item images.",
+          "cameraPermission": "Allow BMSCE Lost & Found to use your camera to photograph found items."
+        }
+      ]
+    ]
+  }
+}
