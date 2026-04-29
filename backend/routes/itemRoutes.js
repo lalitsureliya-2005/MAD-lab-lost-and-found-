@@ -77,27 +77,34 @@ router.post('/', upload.single('image'), async (req, res) => {
         await Notification.insertMany(notifications);
       }
 
-      // Send Push Notifications via Expo Push Service
-      for (const data of notificationData) {
-        if (data.token) {
-          try {
-            await fetch('https://exp.host/--/api/v2/push/send', {
-              method: 'POST',
-              headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                to: data.token,
-                sound: 'default',
-                title: type === 'found' ? `🟢 FOUND Report: "${title}" - Possible Match!` : `🔴 LOST Report: "${title}" Registered`,
-                body: type === 'found'
-                  ? `Someone FOUND a "${category}" item near ${location}. Description: ${title}. Open the app to connect and verify if it's yours!`
-                  : `A LOST report was filed for "${title}" (${category}) last seen at ${location}. Check the app if you've seen it!`,
-                data: { itemId: newItem._id, type, title, category, location }
-              })
-            });
-            console.log(`[Push] Notification blasted to ${data.token}`);
-          } catch(err) {
-            console.error('[Push Gate Failure]', err);
-          }
+      // GLOBAL BROADCAST: Notify everyone about the new report
+      // Find all unique push tokens in the database
+      const allTokens = await Item.distinct('expoPushToken', { expoPushToken: { $ne: null } });
+      
+      // Also include the current token if provided
+      if (expoPushToken && !allTokens.includes(expoPushToken)) {
+        allTokens.push(expoPushToken);
+      }
+
+      if (allTokens.length > 0) {
+        try {
+          const messages = allTokens.map(token => ({
+            to: token,
+            sound: 'default',
+            title: type === 'found' ? `🎁 NEW FOUND ITEM: ${title}` : `🔍 NEW LOST ITEM: ${title}`,
+            body: `${category} reported at ${location}. Open the app to see details!`,
+            data: { itemId: newItem._id, type, title }
+          }));
+
+          // Send in chunks (Expo allows up to 100 at a time)
+          await fetch('https://exp.host/--/api/v2/push/send', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(messages)
+          });
+          console.log(`[Push] Global broadcast sent to ${allTokens.length} devices.`);
+        } catch (err) {
+          console.error('[Push Broadcast Failure]', err);
         }
       }
 

@@ -28,8 +28,9 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync({
-      projectId: 'b0e0d5a0-0b0a-4b0a-8b0a-0b0a0b0a0b0a', // Placeholder, will use default if empty
+      projectId: '92559d72-1a21-43c0-966e-da3d4d938793',
     })).data;
+    console.log('[App] Push Token:', token);
   }
   return token;
 }
