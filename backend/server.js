@@ -22,8 +22,8 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Error connecting to MongoDB:', err));
 
-// Serve static fields from uploads directory
-app.use('/uploads', express.static('uploads'));
+// Serve static files from uploads directory using absolute path
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/items', require('./routes/itemRoutes'));

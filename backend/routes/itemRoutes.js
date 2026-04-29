@@ -40,8 +40,9 @@ router.get('/reporter/:email', async (req, res) => {
 router.post('/', upload.single('image'), async (req, res) => {
   const { title, description, category, type, location, reporterEmail, reporterPhone, expoPushToken } = req.body;
   
-  // Construct image URL dynamically based on local network IP
-  const imageUrl = req.file ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` : '';
+  // Construct image URL using HTTPS and the correct host
+  const host = req.get('host');
+  const imageUrl = req.file ? `https://${host}/uploads/${req.file.filename}` : '';
 
   try {
     const newItem = new Item({ 
